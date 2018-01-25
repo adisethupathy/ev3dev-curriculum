@@ -84,11 +84,16 @@ assert right_motor.connected
 time_sp = 1  # Any value other than 0.
 while time_sp != 0:
     both_sp = int(input("Enter a speed(0 to 900 dps): "))
+    if both_sp == 0:
+        break
     #right_sp = int(input("Enter a speed for the right motor (0 to 900 dps): "))
     distance_sp = int(input("Distance to travel (inches): "))
+    if both_sp == 0:
+        break
     left_motor.run_forever(speed_sp=both_sp)
     right_motor.run_forever(speed_sp=both_sp)
-    time_sp = distance_sp / both_sp
+    time_sp = distance_sp / (both_sp / 89.5)
+    print(time_sp)
     time.sleep(time_sp)
     left_motor.stop()
     right_motor.stop(stop_action="brake")
@@ -102,14 +107,14 @@ ev3.Sound.speak("Goodbye").wait()
 # to:
 #   Enter a speed (0 to 900 dps):
 #   Distance to travel (inches):
-# TODO: 5. Write the code necessary to make the robot drive at that speed going roughly that distance.
+# DONE: 5. Write the code necessary to make the robot drive at that speed going roughly that distance.
 #   Note, in this module, you are REQUIRED to use the pattern...
 #      run_forever()
 #      time.sleep(some_amount)
 #      stop()
 #   You may NOT use the advanced motor commands at this time like: run_to_abs_pos, run_to_rel_pos, or run_timed.
-# TODO: 6. Modify the program so that it will exit immediately if the answer to   any   question is 0.
-# TODO: 7. Formally test your work. When you think you have the problem complete run these tests to be sure:
+# DONE: 6. Modify the program so that it will exit immediately if the answer to   any   question is 0.
+# DONE: 7. Formally test your work. When you think you have the problem complete run these tests to be sure:
 #   200 dps 24 inches (make sure it drives within 6 inches of the target distance)
 #   400 dps 24 inches (make sure it drives within 6 inches of the target distance)
 #   800 dps 24 inches (make sure it drives within 6 inches of the target distance)
