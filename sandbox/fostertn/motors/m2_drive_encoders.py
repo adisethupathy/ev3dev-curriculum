@@ -38,7 +38,8 @@ while time_sp != 0:
         break
     left_motor.run_to_rel_pos(speed_sp=both_sp, position_sp=distance_sp * 90, stop_action='brake')
     right_motor.run_to_rel_pos(speed_sp=both_sp, position_sp=distance_sp * 90, stop_action='brake' )
-    ev3.Sound.beep().wait_while(right_motor.STATE_RUNNING)
+    left_motor.wait_while(ev3.Motor.STATE_RUNNING)
+    ev3.Sound.beep().wait()
 
 print("Goodbye!")
 ev3.Sound.speak("Goodbye").wait()
