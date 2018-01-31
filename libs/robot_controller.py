@@ -50,6 +50,4 @@ class Snatch3r(object):
 
         for k in range(number_of_sides):
             self.drive_inches(edge_length_in, speed)
-            self.turn_degrees((180*(number_of_sides - 2))/number_of_sides, speed)
-
-        self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
+            self.turn_degrees(360/number_of_sides, speed)
