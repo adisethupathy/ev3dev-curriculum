@@ -44,3 +44,12 @@ class Snatch3r(object):
             self.right_motor.run_to_rel_pos(speed_sp=turn_speed_sp, position_sp=degrees_to_turn*-4.5)
 
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
+
+    def drive_polygon(self, number_of_sides, speed, edge_length_in):
+        """Makes a polygon with the given number of sides at the given speed"""
+
+        for k in range(number_of_sides):
+            self.drive_inches(edge_length_in, speed)
+            self.turn_degrees((180*(number_of_sides - 2))/number_of_sides, speed)
+
+        self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
