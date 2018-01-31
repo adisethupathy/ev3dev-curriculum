@@ -15,15 +15,10 @@ Authors: David Fisher and PUT_YOUR_NAME_HERE.
 #   You will need to modify that code for this problem, but it is a handy starting point.
 
 def main():
-    # --------------------------------------------------------------
-    # We have already implemented this module for you.
-    # There are no TODOs in the code.  Do NOT modify it.
-    # You are not allowed to make any changes to this code.
-    # --------------------------------------------------------------
     print("--------------------------------------------")
     print(" Turn Degrees")
     print("--------------------------------------------")
-    ev3.Sound.speak("Drive inches").wait()
+    ev3.Sound.speak("Turn Degrees").wait()
     robot = robo.Snatch3r()
 
     while True:

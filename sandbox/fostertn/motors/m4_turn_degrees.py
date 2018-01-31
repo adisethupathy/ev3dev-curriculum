@@ -29,7 +29,7 @@ def main():
             if degrees_to_turn == 0:
                 break
 
-            robot.drive_inches(turn_speed_sp, degrees_to_turn)
+            robot.turn_degrees(degrees_to_turn, turn_speed_sp)
             ev3.Sound.beep().wait()  # Fun little beep
 
         print("Goodbye!")
@@ -69,3 +69,5 @@ def main():
 # TODO: 6. Call over a TA or instructor to sign your team's checkoff sheet and do a code review.
 #
 # Observations you should make, using run_to_rel_pos is useful for accurate turns, but testing takes time.
+
+main()
