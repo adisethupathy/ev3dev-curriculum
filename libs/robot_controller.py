@@ -12,31 +12,20 @@
 """
 
 import ev3dev.ev3 as ev3
-import math
-import time
 
 
 class Snatch3r(object):
     """Commands for the Snatch3r robot that might be useful in many different programs."""
-    
-    # TODO: Implement the Snatch3r class as needed when working the sandox exercises
-    # (and delete these comments)
 
     def __init__(self):
         self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
         self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
 
-
     def drive_inches(self, inches_target, speed_deg_per_second):
-        time_sp = 1  # Any value other than 0.
-        while time_sp != 0:
-            #speed_deg_per_second = int(input("Enter a speed(0 to 900 dps): "))
-            if speed_deg_per_second == 0:
-                break
+        """Allows the robot to drive to a target distance at a given speed"""
+        self.left_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90,
+                                       stop_action='brake')
+        self.right_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90,
+                                        stop_action='brake')
 
-            #inches_target = int(input("Distance to travel (inches): "))
-            if speed_deg_per_second == 0:
-                break
-            self.left_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90, stop_action='brake')
-            self.right_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90, stop_action='brake')
-            ev3.Sound.beep().wait_while(self.right_motor.STATE_RUNNING)
+        self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
