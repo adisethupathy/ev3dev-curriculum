@@ -21,6 +21,11 @@ import robot_controller as robo
 def main():
         robot = robo.Snatch3r()
 
+        print("--------------------------------------------")
+        print(" Turn degrees")
+        print("--------------------------------------------")
+        ev3.Sound.speak("Turn degrees").wait()
+
         while True:
             turn_speed_sp = int(input("Speed (0 to 900 dps): "))
             if turn_speed_sp == 0:
