@@ -21,15 +21,15 @@ Which will probably not require you to type the password since sudo was just run
 
 BTW chvt means CHange the Virtual Terminal, and 86ing something means to kick it out.
 
-Authors: David Fisher and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+Authors: David Fisher and Tyler Foster.
+"""  # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.
 
 import ev3dev.ev3 as ev3
 import time
 from PIL import Image
 
 
-# TODO: 2. Have someone on your team run this program as is on the EV3 and make sure everyone understands the code.
+# DONE: 2. Have someone on your team run this program as is on the EV3 and make sure everyone understands the code.
 # Can you see what the robot does and explain what each line of code is doing? Talk as a group to make sure.
 
 class DataContainer(object):
@@ -66,26 +66,44 @@ def main():
     # Object that is storing references to images that can be passed into callbacks.
     dc = DataContainer()
 
-    display_image(dc.lcd_screen, dc.eyes)  # Display an image on the EV3 screen
+    #display_image(dc.lcd_screen, dc.eyes)   Display an image on the EV3 screen
     ev3.Sound.speak("I R events with the Screen").wait()
 
-    # TODO: 3. Create a remote control object for channel 1. Add lambda callbacks for:
+    # Done: 3. Create a remote control object for channel 1. Add lambda callbacks for:
     #   .on_red_up    to call handle_red_up_1    (that exist already) with state and dc as parameters
     #   .on_red_down  to call handle_red_down_1  (that exist already) with state and dc as parameters
     #   .on_blue_up   to call handle_blue_up_1   (that exist already) with state and dc as parameters
     #   .on_blue_down to call handle_blue_down_1 (that exist already) with state and dc as parameters
+    rc1 = ev3.RemoteControl(channel=1)
+    assert rc1.connected
+    rc1.on_red_up = lambda state: handle_red_up_1(state, dc)
+    rc1.on_red_down = lambda state: handle_red_down_1(state, dc)
+    rc1.on_blue_up = lambda state: handle_blue_up_1(state, dc)
+    rc1.on_blue_down = lambda state: handle_blue_down_1(state, dc)
+
+
 
     # TODO: 5. Create remote control objects for channels 2, 3, and 4. Add lambda callbacks for on_red_up to each one:
     #   Channel 2's .on_red_up should call handle_red_up_2 (that exist already) with state and dc as parameters
     #   Channel 3's .on_red_up should call handle_red_up_3 (that exist already) with state and dc as parameters
     #   Channel 4's .on_red_up should call handle_red_up_4 (that exist already) with state and dc as parameters
+    rc2 = ev3.RemoteControl(channel=2)
+    assert rc2.connected
+    rc2.on_red_up = lambda state: handle_red_up_2(state, dc)
+    rc3 = ev3.RemoteControl(channel=3)
+    assert rc3.connected
+    rc3.on_red_up = lambda state: handle_red_up_3(state, dc)
+    rc4 = ev3.RemoteControl(channel=4)
+    assert rc4.connected
+    rc4.on_red_up = lambda state: handle_red_up_4(state, dc)
+
 
     # Buttons on EV3
     btn = ev3.Button()
     btn.on_backspace = lambda state: handle_shutdown(state, dc)
 
     while dc.running:
-        # TODO: 4. Call the .process() method on your channel 1 RemoteControl object, then review and run your code.
+        # done: 4. Call the .process() method on your channel 1 RemoteControl object, then review and run your code.
         #   Review the handle functions below to see how they draw to the screen.  They are already finished.
 
         # TODO: 6. Call the .process() method on your channel 2 - 4 RemoteControl objects and demo your code.
@@ -96,7 +114,10 @@ def main():
         # Observations you should make, IR buttons work exactly like buttons on the EV3.
         #   The screen is a bit annoying to work with due to the Brickman OS interference.
         #   Note you could've run this program with Brickman too, but screen draws would last one 1 second each.
-
+        rc1.process()
+        rc2.process()
+        rc3.process()
+        rc4.process()
         btn.process()  # Monitors for the Back button to exit the program if called.
         time.sleep(0.01)
 
@@ -119,6 +140,7 @@ def handle_red_up_1(button_state, dc):
       :type dc: DataContainer
     """
     if button_state:
+        print("red up")
         display_image(dc.lcd_screen, dc.angry_eyes)
 
 
@@ -131,6 +153,7 @@ def handle_red_down_1(button_state, dc):
       :type dc: DataContainer
     """
     if button_state:
+        print("red down")
         display_image(dc.lcd_screen, dc.puppy_dog_eyes)
 
 
@@ -143,6 +166,7 @@ def handle_blue_up_1(button_state, dc):
       :type dc: DataContainer
     """
     if button_state:
+        print("blue up")
         display_image(dc.lcd_screen, dc.sad_eyes)
 
 
@@ -155,6 +179,7 @@ def handle_blue_down_1(button_state, dc):
       :type dc: DataContainer
     """
     if button_state:
+        print("blue down")
         display_image(dc.lcd_screen, dc.shifty_eyes)
 
 
