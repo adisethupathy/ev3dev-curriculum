@@ -51,3 +51,5 @@ class Snatch3r(object):
         for k in range(number_of_sides):
             self.drive_inches(edge_length_in, speed)
             self.turn_degrees(360/number_of_sides, speed)
+
+    def arm_calibration(self):
