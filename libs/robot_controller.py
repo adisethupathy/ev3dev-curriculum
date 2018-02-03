@@ -59,32 +59,35 @@ class Snatch3r(object):
             self.drive_inches(edge_length_in, speed)
             self.turn_degrees(360/number_of_sides, speed)
 
-    def arm_calibration(self):
-        self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
-        while not self.touch_sensor.is_pressed:
-            time.sleep(0.01)
-        self.arm_motor.stop(stop_action="brake")
-        ev3.Sound.beep().wait()
+    def arm_calibration(self, state):
+        if state:
+            self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
+            while not self.touch_sensor.is_pressed:
+                time.sleep(1.00)
+            self.arm_motor.stop(stop_action="brake")
+            ev3.Sound.beep().wait()
 
-        arm_revolutions_for_full_range = 14.2 * 360
-        self.arm_motor.run_to_rel_pos(position_sp=-arm_revolutions_for_full_range)
-        self.arm_motor.wait_while(self.arm_motor.STATE_RUNNING)
+            arm_revolutions_for_full_range = 14.2 * 360
+            self.arm_motor.run_to_rel_pos(position_sp=-arm_revolutions_for_full_range)
+            self.arm_motor.wait_while(self.arm_motor.STATE_RUNNING)
 
-        self.arm_motor.position = 0
+            self.arm_motor.position = 0
 
-    def arm_up(self):
-        self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
-        while not self.touch_sensor.is_pressed:
-            time.sleep(0.01)
-        self.arm_motor.stop(stop_action="brake")
+    def arm_up(self, state):
+        if state:
+            self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
+            while not self.touch_sensor.is_pressed:
+                time.sleep(0.01)
+            self.arm_motor.stop(stop_action="brake")
 
-        ev3.Sound.beep().wait()
+            ev3.Sound.beep().wait()
 
-    def arm_down(self):
-        self.arm_motor.run_to_abs_pos(position_sp=0, speed_sp=self.MAX_SPEED)
-        self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
+    def arm_down(self, state):
+        if state:
+            self.arm_motor.run_to_abs_pos(position_sp=0, speed_sp=self.MAX_SPEED)
+            self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
 
-        ev3.Sound.beep().wait()
+            ev3.Sound.beep().wait()
 
     def shutdown(self):
         self.right_motor.stop(stop_action="brake")
