@@ -26,6 +26,8 @@ class Snatch3r(object):
         self.touch_sensor = ev3.TouchSensor()
         self.MAX_SPEED = 900
 
+
+
     def drive_inches(self, inches_target, speed_deg_per_second):
         """Allows the robot to drive to a target distance at a given speed"""
         self.left_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90,
@@ -83,3 +85,15 @@ class Snatch3r(object):
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
 
         ev3.Sound.beep().wait()
+
+    def shutdown(self):
+        self.right_motor.stop(stop_action="brake")
+        self.left_motor.stop(stop_action="brake")
+
+        ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.GREEN)
+        ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
+
+        print("--------------------------------------------")
+        print(" Goodbye")
+        print("--------------------------------------------")
+        ev3.Sound.speak("Goodbye").wait()
