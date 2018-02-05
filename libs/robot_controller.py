@@ -26,6 +26,8 @@ class Snatch3r(object):
         self.touch_sensor = ev3.TouchSensor()
         self.MAX_SPEED = 900
 
+        self.running = None
+
     def drive_inches(self, inches_target, speed_deg_per_second):
         """Allows the robot to drive to a target distance at a given speed"""
         self.left_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90,
@@ -72,23 +74,21 @@ class Snatch3r(object):
 
             self.arm_motor.position = 0
 
-    def arm_up(self, state):
+    def arm_up(self):
         """Repositions the arm to be in the up state"""
-        if state:
-            self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
-            while not self.touch_sensor.is_pressed:
-                time.sleep(0.01)
-            self.arm_motor.stop(stop_action="brake")
+        self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
+        while not self.touch_sensor.is_pressed:
+            time.sleep(0.01)
+        self.arm_motor.stop(stop_action="brake")
 
-            ev3.Sound.beep().wait()
+        ev3.Sound.beep().wait()
 
-    def arm_down(self, state):
+    def arm_down(self):
         """Repositions the arm to be in the down state"""
-        if state:
-            self.arm_motor.run_to_abs_pos(position_sp=0, speed_sp=self.MAX_SPEED)
-            self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
+        self.arm_motor.run_to_abs_pos(position_sp=0, speed_sp=self.MAX_SPEED)
+        self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
 
-            ev3.Sound.beep().wait()
+        ev3.Sound.beep().wait()
 
     def shutdown(self):
         """Stops all motors and exits the program"""
@@ -98,7 +98,43 @@ class Snatch3r(object):
         ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.GREEN)
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
 
+        self.running = False
+
         print("--------------------------------------------")
         print(" Goodbye")
         print("--------------------------------------------")
         ev3.Sound.speak("Goodbye").wait()
+
+    def loop_forever(self):
+        # This is a convenience method that I don't really recommend for most programs other than m5.
+        #   This method is only useful if the only input to the robot is coming via mqtt.
+        #   MQTT messages will still call methods, but no other input or output happens.
+        # This method is given here since the concept might be confusing.
+        self.running = True
+        while self.running:
+            time.sleep(0.1)  # Do nothing (except receive MQTT messages) until an MQTT message calls shutdown.
+
+    def forward(self, left_speed, right_speed):
+        self.right_motor.run_forever(speed_sp=right_speed)
+        self.left_motor.run_forever(speed_sp=left_speed)
+
+    def stop(self):
+        self.right_motor.stop(stop_action="brake")
+        self.left_motor.stop(stop_action="brake")
+
+        ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.BLACK)
+        ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
+
+    def left(self, left_speed):
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=-left_speed)
+
+    def right(self, right_speed):
+        self.right_motor.run_forever(speed_sp=right_speed)
+        self.left_motor.run_forever(speed_sp=-right_speed)
+
+    def back(self, left_speed, right_speed):
+        self.right_motor.run_forever(speed_sp=-right_speed)
+        self.left_motor.run_forever(speed_sp=-left_speed)
+
+
