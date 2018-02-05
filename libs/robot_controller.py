@@ -60,6 +60,7 @@ class Snatch3r(object):
             self.turn_degrees(360/number_of_sides, speed)
 
     def arm_calibration(self, state):
+        """Resets the position of the arm to be in the down position"""
         if state:
             self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
             while not self.touch_sensor.is_pressed:
@@ -74,6 +75,7 @@ class Snatch3r(object):
             self.arm_motor.position = 0
 
     def arm_up(self, state):
+        """Repositions the arm to be in the up state"""
         if state:
             self.arm_motor.run_forever(speed_sp=self.MAX_SPEED)
             while not self.touch_sensor.is_pressed:
@@ -83,6 +85,7 @@ class Snatch3r(object):
             ev3.Sound.beep().wait()
 
     def arm_down(self, state):
+        """Repositions the arm to be in the down state"""
         if state:
             self.arm_motor.run_to_abs_pos(position_sp=0, speed_sp=self.MAX_SPEED)
             self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)  # Blocks until the motor finishes running
@@ -90,6 +93,7 @@ class Snatch3r(object):
             ev3.Sound.beep().wait()
 
     def shutdown(self):
+        """Stops all motors and exits the program"""
         self.right_motor.stop(stop_action="brake")
         self.left_motor.stop(stop_action="brake")
 
