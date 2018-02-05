@@ -110,7 +110,7 @@ def main():
 # DONE: 6. Implement the IR handler callbacks handlers.
 
 
-def red_up(state, dc):
+def red_up(state):
     if state:
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
         left_motor.run_forever(speed_sp=600)
@@ -119,7 +119,7 @@ def red_up(state, dc):
         left_motor.run_forever(speed_sp=0)
 
 
-def red_down(state, dc):
+def red_down(state):
     if state:
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.RED)
         left_motor.run_forever(speed_sp=-600)
@@ -128,7 +128,7 @@ def red_down(state, dc):
         left_motor.run_forever(speed_sp=0)
 
 
-def blue_up(state, dc):
+def blue_up(state):
     if state:
         ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.GREEN)
         right_motor.run_forever(speed_sp=600)
@@ -137,7 +137,7 @@ def blue_up(state, dc):
         right_motor.run_forever(speed_sp=0)
 
 
-def blue_down(state, dc):
+def blue_down(state):
     if state:
         ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.RED)
         right_motor.run_forever(speed_sp=-600)
