@@ -197,7 +197,7 @@ def handle_shutdown(button_state, dc):
     """
     if button_state:
         dc.running = False
-        
+
 
 # ----------------------------------------------------------------------
 # Calls  main  to start the ball rolling.

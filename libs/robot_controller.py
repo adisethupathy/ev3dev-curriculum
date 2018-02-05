@@ -27,7 +27,6 @@ class Snatch3r(object):
         self.MAX_SPEED = 900
 
 
-
     def drive_inches(self, inches_target, speed_deg_per_second):
         """Allows the robot to drive to a target distance at a given speed"""
         self.left_motor.run_to_rel_pos(speed_sp=speed_deg_per_second, position_sp=inches_target * 90,
