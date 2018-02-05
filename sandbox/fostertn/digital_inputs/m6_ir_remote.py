@@ -48,6 +48,7 @@ class DataContainer(object):
 left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
 right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
 
+
 def main():
     print("--------------------------------------------")
     print("IR Remote")
@@ -108,6 +109,7 @@ def main():
 # ----------------------------------------------------------------------
 # DONE: 6. Implement the IR handler callbacks handlers.
 
+
 def red_up(state, dc):
     if state:
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
@@ -116,6 +118,7 @@ def red_up(state, dc):
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
         left_motor.run_forever(speed_sp=0)
 
+
 def red_down(state, dc):
     if state:
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.RED)
@@ -123,6 +126,7 @@ def red_down(state, dc):
     else:
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
         left_motor.run_forever(speed_sp=0)
+
 
 def blue_up(state, dc):
     if state:
@@ -193,6 +197,7 @@ def handle_shutdown(button_state, dc):
     """
     if button_state:
         dc.running = False
+        
 
 # ----------------------------------------------------------------------
 # Calls  main  to start the ball rolling.
