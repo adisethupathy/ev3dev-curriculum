@@ -32,6 +32,7 @@ def color_sensor_color():
         current_color = color_sensor.color
         if current_color == ev3.ColorSensor.COLOR_RED:
             ev3.Sound.speak("I see Red").wait()
+
         else:
             color_names = ["No color", "Black", "Blue", "Green", "Yellow", "Red", "White", "Brown"]
             print("I see " + color_names[current_color])
