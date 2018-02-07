@@ -115,10 +115,12 @@ class Snatch3r(object):
             time.sleep(0.1)  # Do nothing (except receive MQTT messages) until an MQTT message calls shutdown.
 
     def forward(self, left_speed, right_speed):
+        """Drives the robot forward"""
         self.right_motor.run_forever(speed_sp=right_speed)
         self.left_motor.run_forever(speed_sp=left_speed)
 
     def stop(self):
+        """Stops both motors"""
         self.right_motor.stop(stop_action="brake")
         self.left_motor.stop(stop_action="brake")
 
@@ -126,15 +128,16 @@ class Snatch3r(object):
         ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
 
     def left(self, left_speed):
-        self.left_motor.run_forever(speed_sp=left_speed)
-        self.right_motor.run_forever(speed_sp=-left_speed)
+        """turns the robot left"""
+        self.left_motor.run_forever(speed_sp=-left_speed)
+        self.right_motor.run_forever(speed_sp=left_speed)
 
     def right(self, right_speed):
-        self.right_motor.run_forever(speed_sp=right_speed)
-        self.left_motor.run_forever(speed_sp=-right_speed)
+        """Turns the robot right"""
+        self.right_motor.run_forever(speed_sp=-right_speed)
+        self.left_motor.run_forever(speed_sp=right_speed)
 
     def back(self, left_speed, right_speed):
+        """Drives the robot backward"""
         self.right_motor.run_forever(speed_sp=-right_speed)
         self.left_motor.run_forever(speed_sp=-left_speed)
-
-
