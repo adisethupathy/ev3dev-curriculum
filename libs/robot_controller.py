@@ -26,7 +26,8 @@ class Snatch3r(object):
         self.touch_sensor = ev3.TouchSensor()
         self.MAX_SPEED = 900
 
-        self.running = None
+        self.color_sensor = ev3.ColorSensor()
+        assert self.color_sensor
 
     def drive_inches(self, inches_target, speed_deg_per_second):
         """Allows the robot to drive to a target distance at a given speed"""
