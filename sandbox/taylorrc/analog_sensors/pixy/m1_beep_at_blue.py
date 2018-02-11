@@ -30,20 +30,27 @@ def main():
     robot.pixy.mode = "SIG1"
 
     while not robot.touch_sensor.is_pressed:
-        # TODO: 2. Implement the module as described in the opening comment block.
+        # DONE: 2. Implement the module as described in the opening comment block.
         # It is recommended that you add to your Snatch3r class's constructor the pixy object, as shown
         #   self.pixy = ev3.Sensor(driver_name="pixy-lego")
         #   assert self.pixy
         # Then here you can use a command like width = robot.pixy.value(3)
 
+        print('Value1: X', robot.pixy.value(1))
+        print('Value2: Y', robot.pixy.value(2))
+        print('Value3: Width', robot.pixy.value(3))
+        print('Value4: Height', robot.pixy.value(4))
 
+        if robot.pixy.value(3) >= 1:
+            ev3.Sound.beep()
+            time.sleep(1.0)
 
         time.sleep(0.1)
 
     print("Goodbye!")
     ev3.Sound.speak("Goodbye").wait()
 
-# TODO: 3. Call over a TA or instructor to sign your team's checkoff sheet.
+# DONE: 3. Call over a TA or instructor to sign your team's checkoff sheet.
 #
 # Observations you should make, the Pixy cam can detect colors.  That's just neat. ;)
 
