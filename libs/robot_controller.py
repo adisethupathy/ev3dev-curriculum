@@ -34,6 +34,9 @@ class Snatch3r(object):
         self.ir_sensor = ev3.InfraredSensor()
         assert self.ir_sensor
 
+        self.pixy = ev3.Sensor(driver_name="pixy-lego")
+        assert self.pixy
+
 
     def drive_inches(self, inches_target, speed_deg_per_second):
         """Allows the robot to drive to a target distance at a given speed"""
@@ -198,10 +201,12 @@ def seek_beacon(robot):
         # DONE: 3. Use the beacon_seeker object to get the current heading and distance.
         current_heading = beacon_seeker.heading  # use the beacon_seeker heading
         current_distance = beacon_seeker.distance  # use the beacon_seeker distance
-        if current_distance == -128:
+        while current_distance == -128:
+            current_heading = beacon_seeker.heading  # use the beacon_seeker heading
+            current_distance = beacon_seeker.distance
             # If the IR Remote is not found just sit idle for this program until it is moved.
             print("IR Remote not found. Distance is -128")
-            robot.stop()
+            robot.right(100)
         else:
             # DONE: 4. Implement the following strategy to find the beacon.
             # If the absolute value of the current_heading is less than 2, you are on the right heading.
@@ -226,9 +231,15 @@ def seek_beacon(robot):
                 # Close enough of a heading to move forward
                 print("On the right heading. Distance: ", current_distance)
                 # You add more!
-                if current_distance == 0:
+                if current_distance <= 1:
+                    time.sleep(0.5)
+                    robot.stop()
+                    robot.arm_up()
+                    time.sleep(1)
+                    robot.arm_down()
+
                     return True
-                if current_distance > 0:
+                if current_distance > 1:
                     robot.forward(forward_speed, forward_speed)
 
             if math.fabs(current_heading) > 2 and math.fabs(current_heading) < 10:
@@ -239,6 +250,8 @@ def seek_beacon(robot):
                     robot.right(turn_speed)
 
             if math.fabs(current_heading) > 10:
+                robot.forward(100, 100)
+                time.sleep(0.5)
                 robot.stop()
                 print("Heading too far off!")
 
