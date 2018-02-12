@@ -102,15 +102,15 @@ def send_led_command(mqtt_client, led_side, led_color):
 def address(mqtt_client, address_entry):
     ship_to = address_entry.get()
 
-    if ship_to == "Red House":
+    if ship_to == "Red":
         mqtt_client.send_message("ship_to_red")
         print("Shipping to Red House")
 
-    elif ship_to == "Blue House":
+    elif ship_to == "Blue":
         mqtt_client.send_message("ship_to_blue")
         print("Shipping to Blue House")
 
-    elif ship_to == "Green House":
+    elif ship_to == "Green":
         mqtt_client.send_message("ship_to_green")
         print("Shipping to Green House")
 
