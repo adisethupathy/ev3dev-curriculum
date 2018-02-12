@@ -1,0 +1,22 @@
+"""
+The Final Project for CSSE120
+This is the pc code to run on my laptop
+Author: Ryan Taylor
+"""
+
+import ev3dev.ev3 as ev3
+import time
+
+import robot_controller as robo
+
+import tkinter
+from tkinter import ttk
+import mqtt_remote_method_calls as com
+
+def main():
+    print("--------------------------------------------")
+    print(" Amazon Fulfillment. How may I help?")
+    print("--------------------------------------------")
+    ev3.Sound.speak("Amazon Fulfillment").wait()
+    print("Press the touch sensor to exit this program.")
+

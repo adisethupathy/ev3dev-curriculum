@@ -41,6 +41,7 @@ def main():
     canvas.grid(columnspan=2)
 
     rect_tag = canvas.create_rectangle(150, 90, 170, 110, fill="blue")
+    img = canvas.create_image()
 
     # Buttons for quit and exit
     quit_button = ttk.Button(main_frame, text="Quit")
