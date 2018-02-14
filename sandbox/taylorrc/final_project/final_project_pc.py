@@ -49,7 +49,7 @@ def main():
 
     left_order_button = ttk.Button(main_frame, text="Order Now")
     left_order_button.grid(row=3, column=0)
-    left_order_button['command'] = lambda: address(mqtt_client, address_entry)
+    left_order_button['command'] = lambda: address(mqtt_client, address_entry, 'item1')
 
     main_label = ttk.Label(main_frame, text="  Welcome to Amazon  ")
     main_label.grid(row=1, column=1)
@@ -69,7 +69,7 @@ def main():
 
     right_order_button = ttk.Button(main_frame, text="Order")
     right_order_button.grid(row=3, column=2)
-    right_order_button['command'] = lambda: address(mqtt_client, address_entry)
+    right_order_button['command'] = lambda: address(mqtt_client, address_entry, 'item2')
 
     spacer = ttk.Label(main_frame, text="")
     spacer.grid(row=4, column=2)
@@ -99,26 +99,38 @@ def send_led_command(mqtt_client, led_side, led_color):
     mqtt_client.send_message("set_led", [led_side, led_color])
 
 
-def address(mqtt_client, address_entry):
+def address(mqtt_client, address_entry, item_number):
     ship_to = address_entry.get()
 
-    if ship_to == "Red":
-        mqtt_client.send_message("ship_to_red")
-        print("Shipping to Red House")
+    if ship_to == "White":
+        if item_number == 'item1':
+            mqtt_client.send_message("grab_package", ['item1'])
+            print("Amazon Echo Ordered")
+        if item_number == 'item2':
+            mqtt_client.send_message("grab_package", ['item2'])
+            print("Fire TV Ordered")
+        mqtt_client.send_message("ship_to", [ship_to])
+        print("Shipping to White House")
 
     elif ship_to == "Blue":
-        mqtt_client.send_message("ship_to_blue")
+        if item_number == 'item1':
+            mqtt_client.send_message("grab_package", ['item1'])
+            print("Amazon Echo Ordered")
+        if item_number == 'item2':
+            mqtt_client.send_message("grab_package", ['item2'])
+            print("Fire TV Ordered")
+        mqtt_client.send_message("ship_to", [ship_to])
         print("Shipping to Blue House")
 
-    elif ship_to == "Green":
-        mqtt_client.send_message("ship_to_green")
-        print("Shipping to Green House")
+    # elif ship_to == "":
+    #     mqtt_client.send_message("ship_to", ship_to)
+    #     print("Shipping to Green House")
 
     elif ship_to == "":
         print("Please enter the shipping address")
 
     else:
-        print("Too far from carrier facility. Ship to a closer address")
+        print("Too far from carrier facility. Ship to another address")
 
 
 

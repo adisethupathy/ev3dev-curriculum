@@ -12,6 +12,7 @@ import robot_controller as robo
 import tkinter
 from tkinter import ttk
 import mqtt_remote_method_calls as com
+robot = robo.Snatch3r()
 
 
 class MyDelegate(object):
@@ -42,6 +43,69 @@ class MyDelegate(object):
                 led_side_string, led_color_string))
         else:
             ev3.Leds.set_color(led_side, led_color)
+
+    def ship_to(self, house_color):
+        if house_color == 'Blue':
+
+            while not robot.touch_sensor.is_pressed:
+                current_color = robot.color_sensor.color
+
+                blue_levels = 999
+                # This will need to be changed in order to follow the blue tape
+
+                while current_color <= blue_levels:
+                    current_color = robot.color_sensor.color
+                    robot.forward(200, 200)
+
+                    print(current_color)
+
+                    # Play around with these numbers to see what will follow the line the easiest
+                    if current_color >= blue_levels:
+                        robot.stop()
+                        break
+
+                    if current_color >= blue_levels:
+                        robot.right(200)
+                        time.sleep(0.5)
+                        robot.forward(200, 200)
+                        time.sleep(0.5)
+                        robot.stop()
+
+        if house_color == 'White':
+
+            while not robot.touch_sensor.is_pressed:
+                current_color = robot.color_sensor.color
+
+                white_levels = 999
+                # This will need to be changed in order to follow the blue tape
+
+                while current_color <= white_levels:
+                    current_color = robot.color_sensor.color
+                    robot.forward(200, 200)
+
+                    print(current_color)
+
+                    # Play around with these numbers to see what will follow the line the easiest
+                    if current_color >= white_levels:
+                        robot.stop()
+                        break
+
+                    if current_color >= white_levels:
+                        robot.right(200)
+                        time.sleep(0.5)
+                        robot.forward(200, 200)
+                        time.sleep(0.5)
+                        robot.stop()
+
+    def grab_package(self, item_number):
+        if item_number == 'item1':
+            channel_number = 1
+            robot.seek_beacon()
+
+        if item_number == 'item2':
+            channel_number = 2
+            robot.seek_beacon()
+
 
 
 def main():
