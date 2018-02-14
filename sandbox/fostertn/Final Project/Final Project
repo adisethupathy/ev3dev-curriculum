@@ -1,0 +1,108 @@
+
+
+"""
+Author: Tyler foster
+"""
+import traceback
+import math
+import ev3dev.ev3 as ev3
+import time
+import robot_controller as robo
+import tkinter
+from tkinter import ttk
+import mqtt_remote_method_calls as com
+
+
+class MyDelegate(object):
+
+    def __init__(self, canvas):
+        self.canvas = canvas
+
+
+def main():
+    print("--------------------------------------------")
+    print("Final Project")
+    print("--------------------------------------------")
+    robot = robo.Snatch3r()
+
+    """making gui canvas"""
+    root = tkinter.Tk()
+    root.title = "Final Project"
+
+    main_frame = ttk.Frame(root, padding=5)
+    main_frame.grid()
+
+    points = 0
+
+    """amount of points won"""
+    #current_color = robot.color_sensor.color
+    #if current_color == ev3.ColorSensor.COLOR_RED:
+    #    ev3.Sound.speak("10 points")
+    #    points = points + 10
+
+    score = "points ="
+
+    label = ttk.Label(main_frame, text=(score, points))
+    label.grid(columnspan=2)
+
+    # Make a tkinter.Canvas on a Frame.
+    canvas = tkinter.Canvas(main_frame, background="lightgray", width=800, height=500)
+    canvas.grid(columnspan=2)
+
+    # Make callbacks for the two buttons.
+    clear_button = ttk.Button(main_frame, text="Restart")
+    clear_button.grid(row=3, column=0)
+    clear_button["command"] = lambda: clear(canvas)
+
+    quit_button = ttk.Button(main_frame, text="Quit")
+    quit_button.grid(row=3, column=1)
+    quit_button["command"] = lambda: quit_program(mqtt_client)
+
+    current_color = ev3.ColorSensor.color
+    if current_color == ev3.ColorSensor.COLOR_BLACK:
+    #    ev3.Sound.speak("game over")
+    #    robot.stop()
+        canvas.create_text(400, 250, font=("Purisa", 36), text="game over!")
+
+    my_delegate = MyDelegate(canvas)
+    mqtt_client = com.MqttClient(my_delegate)
+
+    root.mainloop()
+
+    robot.forward(300, 300)
+    """turning left or right"""
+    while True:
+        command_to_run = input()
+        if command_to_run == 'd':
+            print("Turn Right")
+            robot.turn_degrees(-90, 300)
+        elif command_to_run == 'a':
+            print("Turn Left")
+            robot.turn_degrees(90, 300)
+        elif command_to_run == 'q':
+            print("quit program")
+            break
+
+    """stops robot if goes over black"""
+    current_color = ev3.ColorSensor.COLOR_BLACK
+    if current_color == ev3.ColorSensor.COLOR_BLACK:
+        ev3.Sound.speak("game over")
+        robot.stop()
+        canvas.create_text(90, 90, text="game over")
+
+
+def clear(canvas):
+    """Clears the canvas contents"""
+    canvas.delete("all")
+
+
+def quit_program(mqtt_client):
+    """For best practice you should close the connection.  Nothing really "bad" happens if you
+       forget to close the connection though. Still it seems wise to close it then exit."""
+    if mqtt_client:
+        mqtt_client.close()
+    exit()
+
+
+main()
+"""gets that young ball rolling dude"""
