@@ -9,8 +9,6 @@ import time
 
 import robot_controller as robo
 
-import tkinter
-from tkinter import ttk
 import mqtt_remote_method_calls as com
 robot = robo.Snatch3r()
 
@@ -20,31 +18,17 @@ class MyDelegate(object):
     def __init__(self):
         self.running = True
 
-    def set_led(self, led_side_string, led_color_string):
-        #Change this command to be for shipping and not for setting the LEDs
-
-        print("Received: {} {}".format(led_side_string, led_color_string))
-        led_side = None
-        if led_side_string == "left":
-            led_side = ev3.Leds.LEFT
-        elif led_side_string == "right":
-            led_side = ev3.Leds.RIGHT
-
-        led_color = None
-        if led_color_string == "green":
-            led_color = ev3.Leds.GREEN
-        elif led_color_string == "red":
-            led_color = ev3.Leds.RED
-        elif led_color_string == "black":
-            led_color = ev3.Leds.BLACK
-
-        if led_side is None or led_color is None:
-            print("Invalid parameters sent to set_led. led_side_string = {} led_color_string = {}".format(
-                led_side_string, led_color_string))
-        else:
-            ev3.Leds.set_color(led_side, led_color)
-
     def ship_to(self, house_color):
+        """
+        Takes in the color of the house to be delivered to and takes the remote there by following a line
+        with the color sensor on the bottom of the robot. Tape must be put down before the method will run, and the
+        method will only work with Blue and White tape--the same colors as the houses to be delivered to.
+
+        The method will stop when the touch sensor is pressed--manual override of any employees
+
+        :param house_color: Color of the house to deliver to
+        :return: None
+        """
         if house_color == 'Blue':
 
             while not robot.touch_sensor.is_pressed:
@@ -98,6 +82,13 @@ class MyDelegate(object):
                         robot.stop()
 
     def grab_package(self, item_number):
+        """
+        Uses the IR sensor's beacon-seeking capabilities to find the package in the "carrier facility".
+        The package will only be picked up at this point.
+
+        :param item_number: Allows the IR Sensor to choose which channel to be registered to
+        :return: None
+        """
         if item_number == 'item1':
             channel_number = 1
             robot.seek_beacon()
@@ -105,7 +96,6 @@ class MyDelegate(object):
         if item_number == 'item2':
             channel_number = 2
             robot.seek_beacon()
-
 
 
 def main():
