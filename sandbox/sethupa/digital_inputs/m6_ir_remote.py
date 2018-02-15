@@ -143,6 +143,7 @@ def blue_up(state):
 def blue_down(state):
     if state:
         print('blue down pressed')
+
         ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.RED)
         right_motor.run_forever(speed_sp=-600)
     else:
