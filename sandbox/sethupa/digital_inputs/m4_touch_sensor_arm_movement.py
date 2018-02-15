@@ -107,6 +107,7 @@ def arm_up(arm_motor, touch_sensor):
     ev3.Sound.beep().wait()
 
 
+
 def arm_down(arm_motor):
     """
     Moves the Snatch3r arm to the down position.
