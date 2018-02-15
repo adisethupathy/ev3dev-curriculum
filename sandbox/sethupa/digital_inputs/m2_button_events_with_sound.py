@@ -117,6 +117,7 @@ def handle_right_button(button_state):
         print('Right button was released')
 
 
+
 # DONE: 6. Implement the handle_shutdown function.
 #   Function signature should be:
 #       def handle_shutdown(button_state, dc):
