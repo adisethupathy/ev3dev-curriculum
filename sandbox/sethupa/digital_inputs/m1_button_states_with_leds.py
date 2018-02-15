@@ -29,6 +29,7 @@ def main():
     ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.RED)
     time.sleep(3)
 
+
     # Green LEDs
     ev3.Sound.speak("Green")
     ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
