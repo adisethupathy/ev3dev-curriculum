@@ -191,6 +191,7 @@ def handle_red_up_2(button_state, dc):
         display_image(dc.lcd_screen, dc.progress_0)
 
 
+
 def handle_red_up_3(button_state, dc):
     """
     Handle IR event.
