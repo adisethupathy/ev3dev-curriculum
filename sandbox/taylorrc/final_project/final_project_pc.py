@@ -9,6 +9,8 @@ from tkinter import ttk
 
 import mqtt_remote_method_calls as com
 
+import time
+
 
 class MyDelegateOnThePc(object):
     """ Helper class that will receive MQTT messages from the EV3. """
@@ -16,10 +18,11 @@ class MyDelegateOnThePc(object):
     def __init__(self, label_to_display_messages_in):
         self.display_label = label_to_display_messages_in
 
-    def button_pressed(self, button_name):
-        print("Received: " + button_name)
-        message_to_display = "{} was pressed.".format(button_name)
-        self.display_label.configure(text=message_to_display)
+    def package_found(self):
+        print("Package Found in Warehouse")
+
+    def package_delivered(self):
+        print("Package delivered to address")
 
 
 def main():
@@ -121,6 +124,8 @@ def address(mqtt_client, address_entry, item_number):
         if item_number == 'item2':
             mqtt_client.send_message("grab_package", ['item2'])
             print("Fire TV Ordered")
+
+        time.sleep(20)
         mqtt_client.send_message("ship_to", [ship_to])
         print("Shipping to Blue House")
 

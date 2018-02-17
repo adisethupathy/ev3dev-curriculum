@@ -1,6 +1,6 @@
 """
 The Final Project for CSSE120
-This is the pc code to run on my laptop
+This is the ev3 code to run on the robot itself
 Author: Ryan Taylor
 """
 
@@ -34,7 +34,7 @@ class MyDelegate(object):
             while not robot.touch_sensor.is_pressed:
                 current_color = robot.color_sensor.color
 
-                blue_levels = 999
+                blue_levels = 20
                 # This will need to be changed in order to follow the blue tape
 
                 while current_color <= blue_levels:
@@ -42,6 +42,7 @@ class MyDelegate(object):
                     robot.forward(200, 200)
 
                     print(current_color)
+                    time.sleep(0.5)
 
                     # Play around with these numbers to see what will follow the line the easiest
                     if current_color >= blue_levels:
@@ -60,7 +61,7 @@ class MyDelegate(object):
             while not robot.touch_sensor.is_pressed:
                 current_color = robot.color_sensor.color
 
-                white_levels = 999
+                white_levels = 90
                 # This will need to be changed in order to follow the blue tape
 
                 while current_color <= white_levels:
@@ -68,6 +69,7 @@ class MyDelegate(object):
                     robot.forward(200, 200)
 
                     print(current_color)
+                    time.sleep(0.5)
 
                     # Play around with these numbers to see what will follow the line the easiest
                     if current_color >= white_levels:
@@ -91,23 +93,53 @@ class MyDelegate(object):
         """
         if item_number == 'item1':
             channel_number = 1
+            ev3.Sound.speak('Grabbing Echo')
+            print('Grabbing Echo')
             robot.seek_beacon()
+            print('Fire TV found')
+            ev3.Sound.speak('Echo found')
+            grab_package_message()
+            # this would be a great place to add in 'shipping notifications,' callbacks to the mqtt client on the pc
 
         if item_number == 'item2':
             channel_number = 2
+            ev3.Sound.speak('Grabbing Fire TV')
+            print('Grabbing Fire TV')
             robot.seek_beacon()
+            print('Fire TV found')
+            ev3.Sound.speak('Fire TV found')
 
 
-def main():
-    print("--------------------------------------------")
-    print(" Amazon Fulfillment. How may I help?")
-    print("--------------------------------------------")
-    ev3.Sound.speak("Amazon Fulfillment").wait()
-    print("Press the touch sensor to exit this program.")
-
+def grab_package_message():
     my_delegate = MyDelegate()
     mqtt_client = com.MqttClient(my_delegate)
     mqtt_client.connect_to_pc()
+
+    mqtt_client.send_message("package_found")
+
+def package_delivered_message():
+    my_delegate = MyDelegate()
+    mqtt_client = com.MqttClient(my_delegate)
+    mqtt_client.connect_to_pc()
+
+    mqtt_client.send_message("package_delivered")
+
+
+def main():
+    while not robot.touch_sensor.is_pressed:
+        print("--------------------------------------------")
+        print(" Amazon Fulfillment. How may I help?")
+        print("--------------------------------------------")
+        ev3.Sound.speak("Amazon Fulfillment").wait()
+        print("Press the touch sensor to exit this program.")
+
+        my_delegate = MyDelegate()
+        mqtt_client = com.MqttClient(my_delegate)
+        mqtt_client.connect_to_pc()
+
+    robot.stop()
+    ev3.Sound.speak('Order Cancelled')
+    print('Order Cancelled')
 
 
 main()
