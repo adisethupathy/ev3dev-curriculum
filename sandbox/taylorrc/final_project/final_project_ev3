@@ -6,10 +6,9 @@ Author: Ryan Taylor
 
 import ev3dev.ev3 as ev3
 import time
-
 import robot_controller as robo
-
 import mqtt_remote_method_calls as com
+
 robot = robo.Snatch3r()
 
 
@@ -24,64 +23,56 @@ class MyDelegate(object):
         with the color sensor on the bottom of the robot. Tape must be put down before the method will run, and the
         method will only work with Blue and White tape--the same colors as the houses to be delivered to.
 
-        The method will stop when the touch sensor is pressed--manual override of any employees
-
         :param house_color: Color of the house to deliver to
         :return: None
         """
+
         if house_color == 'Blue':
 
-            while not robot.touch_sensor.is_pressed:
+            robot.turn_degrees(-90, 300)
+            current_color = robot.color_sensor.color
+            blue_levels = 20
+            # This will need to be changed in order to follow the blue tape
+
+            while current_color <= blue_levels:
                 current_color = robot.color_sensor.color
+                robot.forward(200, 200)
+                print(current_color)
+                time.sleep(0.5)
+                # Play around with these numbers to see what will follow the line the easiest
 
-                blue_levels = 20
-                # This will need to be changed in order to follow the blue tape
-
-                while current_color <= blue_levels:
-                    current_color = robot.color_sensor.color
-                    robot.forward(200, 200)
-
-                    print(current_color)
+                if current_color >= blue_levels:
+                    robot.right(200)
                     time.sleep(0.5)
-
-                    # Play around with these numbers to see what will follow the line the easiest
-                    if current_color >= blue_levels:
-                        robot.stop()
-                        break
-
-                    if current_color >= blue_levels:
-                        robot.right(200)
-                        time.sleep(0.5)
-                        robot.forward(200, 200)
-                        time.sleep(0.5)
-                        robot.stop()
+                    robot.forward(200, 200)
+                    time.sleep(0.5)
+                    robot.stop()
 
         if house_color == 'White':
 
-            while not robot.touch_sensor.is_pressed:
+            robot.turn_degrees(90, 300)
+            current_color = robot.color_sensor.color
+            white_levels = 90
+            # This will need to be changed in order to follow the blue tape in different colored lighting
+
+            while current_color <= white_levels:
                 current_color = robot.color_sensor.color
+                robot.forward(200, 200)
 
-                white_levels = 90
-                # This will need to be changed in order to follow the blue tape
+                print(current_color)
+                time.sleep(0.5)
 
-                while current_color <= white_levels:
-                    current_color = robot.color_sensor.color
-                    robot.forward(200, 200)
-
-                    print(current_color)
+                # Play around with these numbers to see what will follow the line the easiest
+                if current_color >= white_levels:
+                    robot.right(200)
                     time.sleep(0.5)
+                    robot.forward(200, 200)
+                    time.sleep(0.5)
+                    robot.stop()
 
-                    # Play around with these numbers to see what will follow the line the easiest
-                    if current_color >= white_levels:
-                        robot.stop()
-                        break
-
-                    if current_color >= white_levels:
-                        robot.right(200)
-                        time.sleep(0.5)
-                        robot.forward(200, 200)
-                        time.sleep(0.5)
-                        robot.stop()
+            robot.stop()
+            robot.arm_down()
+            ev3.Sound.speak('Package Delivered')
 
     def grab_package(self, item_number):
         """
@@ -92,17 +83,13 @@ class MyDelegate(object):
         :return: None
         """
         if item_number == 'item1':
-            channel_number = 1
             ev3.Sound.speak('Grabbing Echo')
             print('Grabbing Echo')
             robot.seek_beacon()
-            print('Fire TV found')
+            print('Echo found')
             ev3.Sound.speak('Echo found')
-            grab_package_message()
-            # this would be a great place to add in 'shipping notifications,' callbacks to the mqtt client on the pc
 
         if item_number == 'item2':
-            channel_number = 2
             ev3.Sound.speak('Grabbing Fire TV')
             print('Grabbing Fire TV')
             robot.seek_beacon()
@@ -110,36 +97,19 @@ class MyDelegate(object):
             ev3.Sound.speak('Fire TV found')
 
 
-def grab_package_message():
-    my_delegate = MyDelegate()
-    mqtt_client = com.MqttClient(my_delegate)
-    mqtt_client.connect_to_pc()
-
-    mqtt_client.send_message("package_found")
-
-def package_delivered_message():
-    my_delegate = MyDelegate()
-    mqtt_client = com.MqttClient(my_delegate)
-    mqtt_client.connect_to_pc()
-
-    mqtt_client.send_message("package_delivered")
-
-
 def main():
-    while not robot.touch_sensor.is_pressed:
+    while robot.running:
         print("--------------------------------------------")
         print(" Amazon Fulfillment. How may I help?")
         print("--------------------------------------------")
         ev3.Sound.speak("Amazon Fulfillment").wait()
-        print("Press the touch sensor to exit this program.")
 
         my_delegate = MyDelegate()
         mqtt_client = com.MqttClient(my_delegate)
         mqtt_client.connect_to_pc()
 
-    robot.stop()
-    ev3.Sound.speak('Order Cancelled')
-    print('Order Cancelled')
+        time.sleep(40)
+        mqtt_client.send_message("package_delivered")
 
 
 main()
