@@ -1,7 +1,8 @@
 """
-The Final Project for CSSE120
-This is the ev3 code to run on the robot itself
-Author: Ryan Taylor
+This is NOT the code used in my final project. I used this code to test different functions while experiencing issues
+with MQTT. My ev3 code is titled "final_project_ev3"
+
+
 """
 
 import ev3dev.ev3 as ev3
