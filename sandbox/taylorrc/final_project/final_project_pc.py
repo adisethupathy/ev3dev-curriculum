@@ -4,18 +4,12 @@ This is the pc code to run on my laptop
 Author: Ryan Taylor
 """
 
-import ev3dev.ev3 as ev3
-import time
-
-import robot_controller as robo
-
 import tkinter
 from tkinter import ttk
 
-from tkinter import *
-from PIL import ImageTk, Image
-
 import mqtt_remote_method_calls as com
+
+import time
 
 
 class MyDelegateOnThePc(object):
@@ -24,13 +18,20 @@ class MyDelegateOnThePc(object):
     def __init__(self, label_to_display_messages_in):
         self.display_label = label_to_display_messages_in
 
-    def button_pressed(self, button_name):
-        print("Received: " + button_name)
-        message_to_display = "{} was pressed.".format(button_name)
-        self.display_label.configure(text=message_to_display)
+    def package_found(self):
+        print("Package Found in Warehouse")
+
+    def package_delivered(self):
+        print("Package delivered to address")
 
 
 def main():
+    """
+    A majority of the main() function determines how the GUI should look, including adding images and defining buttons
+    to call functions on the ev3.
+
+    :return: None
+    """
     root = tkinter.Tk()
     root.title("Amazon.com")
 
@@ -67,7 +68,7 @@ def main():
     # Change this lambda statement
     button2['command'] = lambda: print("Amazon's Fire TV: The newest in streaming")
 
-    right_order_button = ttk.Button(main_frame, text="Order")
+    right_order_button = ttk.Button(main_frame, text="Order Now")
     right_order_button.grid(row=3, column=2)
     right_order_button['command'] = lambda: address(mqtt_client, address_entry, 'item2')
 
@@ -81,8 +82,8 @@ def main():
     address_button.grid(row=3, column=1)
     address_button['command'] = lambda: print("Address Found")
 
-    # Buttons for quit and exit
-    q_button = ttk.Button(main_frame, text="Quit")
+    # Button for leaving the GUI
+    q_button = ttk.Button(main_frame, text="Leave Amazon")
     q_button.grid(row=5, column=2)
     q_button['command'] = (lambda: quit_program(mqtt_client))
 
@@ -94,12 +95,16 @@ def main():
     root.mainloop()
 
 
-def send_led_command(mqtt_client, led_side, led_color):
-    print("Sending LED side = {}  LED color = {}".format(led_side, led_color))
-    mqtt_client.send_message("set_led", [led_side, led_color])
-
-
 def address(mqtt_client, address_entry, item_number):
+    """
+    This is the main method to ship packages to the different houses.
+    Sends messages to the ev3 delegate to grab the package and send it to the house
+
+    :param mqtt_client: Connects to the ev3
+    :param address_entry: Allows the ev3 to know which house to deliver to
+    :param item_number: Allows the ev3 to determine which package was ordered
+    :return: None
+    """
     ship_to = address_entry.get()
 
     if ship_to == "White":
@@ -119,12 +124,10 @@ def address(mqtt_client, address_entry, item_number):
         if item_number == 'item2':
             mqtt_client.send_message("grab_package", ['item2'])
             print("Fire TV Ordered")
+
+        time.sleep(20)
         mqtt_client.send_message("ship_to", [ship_to])
         print("Shipping to Blue House")
-
-    # elif ship_to == "":
-    #     mqtt_client.send_message("ship_to", ship_to)
-    #     print("Shipping to Green House")
 
     elif ship_to == "":
         print("Please enter the shipping address")
@@ -133,8 +136,8 @@ def address(mqtt_client, address_entry, item_number):
         print("Too far from carrier facility. Ship to another address")
 
 
-
 def quit_program(mqtt_client):
+    """Allows the user to close down the GUI on the computer. Will also close the MQTT connection."""
     print("Have a nice day!")
     mqtt_client.close()
     exit()

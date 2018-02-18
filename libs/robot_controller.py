@@ -161,22 +161,23 @@ class Snatch3r(object):
         try:
             while True:
                 if seek_beacon(self) is True:
-                    print("Found the Beacon")
-                    ev3.Sound.speak("Found the Beacon")
+                    # print("Found the Beacon")
+                    # ev3.Sound.speak("Found the Beacon")
+                    break
 
                 # DONE: 5. Save the result of the seek_beacon function (a bool), then use that value to only say "Found the
                 # beacon" if the return value is True.  (i.e. don't say "Found the beacon" if the attempts was cancelled.)
 
 
-                command = input("Hit enter to seek the beacon again or enter q to quit: ")
-                if command == "q":
-                    break
+                # command = input("Hit enter to seek the beacon again or enter q to quit: ")
+                # if command == "q":
+                #     break
         except:
             traceback.print_exc()
             ev3.Sound.speak("Error")
 
-        print("Goodbye!")
-        ev3.Sound.speak("Goodbye").wait()
+        # print("Goodbye!")
+        # ev3.Sound.speak("Goodbye").wait()
 
 
 def seek_beacon(robot):
@@ -232,7 +233,7 @@ def seek_beacon(robot):
                 print("On the right heading. Distance: ", current_distance)
                 # You add more!
                 if current_distance <= 1:
-                    time.sleep(0.5)
+                    time.sleep(0.6)
                     robot.stop()
                     robot.arm_up()
                     time.sleep(1)
