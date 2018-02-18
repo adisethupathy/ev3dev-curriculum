@@ -13,6 +13,11 @@ from tkinter import ttk
 import mqtt_remote_method_calls as com
 
 
+#class DataContainer(object):
+#    def __init__(self):
+#        self.running = True
+
+
 class MyDelegate(object):
 
     def __init__(self, canvas):
@@ -25,70 +30,64 @@ def main():
     print("--------------------------------------------")
     robot = robo.Snatch3r()
 
-    """making gui canvas"""
-    root = tkinter.Tk()
-    root.title = "Final Project"
+    mqtt_client = com.MqttClient()
+    mqtt_client.connect_to_ev3()
+#    dc = DataContainer()
 
-    main_frame = ttk.Frame(root, padding=5)
+    root = tkinter.Tk()
+    root.title("Final Project")
+
+    main_frame = ttk.Frame(root, padding=20, relief='raised')
     main_frame.grid()
 
     points = 0
+    left_speed = 300
+    right_speed = 300
 
     """amount of points won"""
-    #current_color = robot.color_sensor.color
-    #if current_color == ev3.ColorSensor.COLOR_RED:
-    #    ev3.Sound.speak("10 points")
-    #    points = points + 10
+    #if robot.color_sensor.color == ev3.ColorSensor.COLOR_RED:
+     #   ev3.Sound.speak("10 points")
+      #  points = points + 10
 
     score = "points ="
 
     label = ttk.Label(main_frame, text=(score, points))
     label.grid(columnspan=2)
 
-    # Make a tkinter.Canvas on a Frame.
-    canvas = tkinter.Canvas(main_frame, background="lightgray", width=800, height=500)
-    canvas.grid(columnspan=2)
-
-    # Make callbacks for the two buttons.
+    # Make callbacks for the three buttons.
     clear_button = ttk.Button(main_frame, text="Restart")
-    clear_button.grid(row=3, column=0)
-    clear_button["command"] = lambda: clear(canvas)
+    clear_button.grid(row=3, column=1)
+    clear_button["command"] = lambda: stop(mqtt_client)
 
-    quit_button = ttk.Button(main_frame, text="Quit")
-    quit_button.grid(row=3, column=1)
+    start_button = ttk.Button(main_frame, text="Start")
+    start_button.grid(row=3, column=0)
+    start_button["command"] = lambda: forward(mqtt_client, left_speed, right_speed)
+
+    root.bind('<Left>', lambda event: left(mqtt_client, left_speed))
+    root.bind('<Right>', lambda event: right(mqtt_client, right_speed))
+    root.bind('<Up>', lambda event: forward(mqtt_client, left_speed, right_speed))
+
+    quit_button = ttk.Button(main_frame, text="Quit Game")
+    quit_button.grid(row=3, column=2)
     quit_button["command"] = lambda: quit_program(mqtt_client)
 
-    current_color = ev3.ColorSensor.color
-    if current_color == ev3.ColorSensor.COLOR_BLACK:
-    #    ev3.Sound.speak("game over")
-    #    robot.stop()
-        canvas.create_text(400, 250, font=("Purisa", 36), text="game over!")
-
-    my_delegate = MyDelegate(canvas)
-    mqtt_client = com.MqttClient(my_delegate)
+   # while robot.forward(300, 300):
+    #    current_color = ev3.ColorSensor.color
+      #  if current_color == ev3.ColorSensor.COLOR_BLACK:
+     #       robot.stop()
+    #if robot.touch_sensor.is_pressed:
+     #   lambda: stop(mqtt_client)
 
     root.mainloop()
 
-    robot.forward(300, 300)
     """turning left or right"""
-    while True:
-        command_to_run = input()
-        if command_to_run == 'd':
-            print("Turn Right")
-            robot.turn_degrees(-90, 300)
-        elif command_to_run == 'a':
-            print("Turn Left")
-            robot.turn_degrees(90, 300)
-        elif command_to_run == 'q':
-            print("quit program")
-            break
 
     """stops robot if goes over black"""
     current_color = ev3.ColorSensor.COLOR_BLACK
     if current_color == ev3.ColorSensor.COLOR_BLACK:
         ev3.Sound.speak("game over")
         robot.stop()
-        canvas.create_text(90, 90, text="game over")
+#canvas.create_text(90, 90, text="game over")
 
 
 def clear(canvas):
@@ -102,6 +101,26 @@ def quit_program(mqtt_client):
     if mqtt_client:
         mqtt_client.close()
     exit()
+
+
+def forward(mqtt_client, left_speed, right_speed):
+    print('forward')
+    mqtt_client.send_message("forward", [left_speed, right_speed])
+
+
+def left(mqtt_client, left_speed):
+    print('left')
+    mqtt_client.send_message("left", [left_speed])
+
+
+def stop(mqtt_client):
+    print('stop')
+    mqtt_client.send_message("stop")
+
+
+def right(mqtt_client, right_speed):
+    print('right')
+    mqtt_client.send_message("right", [right_speed])
 
 
 main()
