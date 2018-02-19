@@ -3,56 +3,48 @@
 """
 Author: Tyler foster
 """
-import traceback
-import math
-import ev3dev.ev3 as ev3
-import time
-import robot_controller as robo
 import tkinter
 from tkinter import ttk
 import mqtt_remote_method_calls as com
+import ev3dev.ev3 as ev3
+import time
+import traceback
+import math
 
-
-#class DataContainer(object):
-#    def __init__(self):
-#        self.running = True
+points = 0
 
 
 class MyDelegate(object):
+    def __init__(self, main_frame):
+        self.running = True
+        self.main_frame = main_frame
+        label = ttk.Label(self.main_frame, text="Points: 0")
+        label.grid(columnspan=2)
 
-    def __init__(self, canvas):
-        self.canvas = canvas
+    def sendPoints(self):
+        global points
+        points = 10 + points
+        label = ttk.Label(self.main_frame, text="Points:" + str(points))
+        label.grid(columnspan=2)
+
+    def gameover(self):
+        label = ttk.Label(self.main_frame, text="Game Over!")
+        label.grid(columnspan=2)
+
 
 
 def main():
     print("--------------------------------------------")
     print("Final Project")
     print("--------------------------------------------")
-    robot = robo.Snatch3r()
-
-    mqtt_client = com.MqttClient()
-    mqtt_client.connect_to_ev3()
-#    dc = DataContainer()
 
     root = tkinter.Tk()
     root.title("Final Project")
 
     main_frame = ttk.Frame(root, padding=20, relief='raised')
     main_frame.grid()
-
-    points = 0
     left_speed = 300
     right_speed = 300
-
-    """amount of points won"""
-    #if robot.color_sensor.color == ev3.ColorSensor.COLOR_RED:
-     #   ev3.Sound.speak("10 points")
-      #  points = points + 10
-
-    score = "points ="
-
-    label = ttk.Label(main_frame, text=(score, points))
-    label.grid(columnspan=2)
 
     # Make callbacks for the three buttons.
     clear_button = ttk.Button(main_frame, text="Restart")
@@ -66,28 +58,17 @@ def main():
     root.bind('<Left>', lambda event: left(mqtt_client, left_speed))
     root.bind('<Right>', lambda event: right(mqtt_client, right_speed))
     root.bind('<Up>', lambda event: forward(mqtt_client, left_speed, right_speed))
+    root.bind('<Down>', lambda event: stop(mqtt_client))
 
     quit_button = ttk.Button(main_frame, text="Quit Game")
     quit_button.grid(row=3, column=2)
     quit_button["command"] = lambda: quit_program(mqtt_client)
 
-   # while robot.forward(300, 300):
-    #    current_color = ev3.ColorSensor.color
-      #  if current_color == ev3.ColorSensor.COLOR_BLACK:
-     #       robot.stop()
-    #if robot.touch_sensor.is_pressed:
-     #   lambda: stop(mqtt_client)
+    my_delegate = MyDelegate(main_frame)
+    mqtt_client = com.MqttClient(my_delegate)
+    mqtt_client.connect_to_ev3()
 
     root.mainloop()
-
-    """turning left or right"""
-
-    """stops robot if goes over black"""
-    current_color = ev3.ColorSensor.COLOR_BLACK
-    if current_color == ev3.ColorSensor.COLOR_BLACK:
-        ev3.Sound.speak("game over")
-        robot.stop()
-#canvas.create_text(90, 90, text="game over")
 
 
 def clear(canvas):
