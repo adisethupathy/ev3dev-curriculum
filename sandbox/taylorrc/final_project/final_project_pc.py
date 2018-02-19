@@ -21,9 +21,6 @@ class MyDelegateOnThePc(object):
     def package_found(self):
         print("Package Found in Warehouse")
 
-    def package_delivered(self):
-        print("Package delivered to address")
-
 
 def main():
     """
@@ -105,6 +102,7 @@ def address(mqtt_client, address_entry, item_number):
     :param item_number: Allows the ev3 to determine which package was ordered
     :return: None
     """
+
     ship_to = address_entry.get()
 
     if ship_to == "White":
@@ -114,7 +112,8 @@ def address(mqtt_client, address_entry, item_number):
         if item_number == 'item2':
             mqtt_client.send_message("grab_package", ['item2'])
             print("Fire TV Ordered")
-        mqtt_client.send_message("ship_to", [ship_to])
+
+        # mqtt_client.send_message("ship_to", [ship_to])
         print("Shipping to White House")
 
     elif ship_to == "Blue":
@@ -139,6 +138,7 @@ def address(mqtt_client, address_entry, item_number):
 def quit_program(mqtt_client):
     """Allows the user to close down the GUI on the computer. Will also close the MQTT connection."""
     print("Have a nice day!")
+    mqtt_client.send_message("shutdown")
     mqtt_client.close()
     exit()
 

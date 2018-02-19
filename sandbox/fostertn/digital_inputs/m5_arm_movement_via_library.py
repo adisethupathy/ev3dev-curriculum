@@ -36,7 +36,7 @@ def main():
         command_to_run = input("Enter c (for calibrate), u (for up), d (for down), or q (for quit): ")
         if command_to_run == 'c':
             print("Calibrate the arm")
-            robot.arm_calibration()
+            robot.arm_calibration(True)
         elif command_to_run == 'u':
             print("Move the arm to the up position")
             robot.arm_up()
